@@ -1,0 +1,38 @@
+tosca_definitions_version: cloudify_dsl_1_3
+
+description: >
+  Fabric test
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/4.0/types.yaml
+  - http://www.getcloudify.org/spec/fabric-plugin/1.4.2/plugin.yaml
+
+inputs:
+  ssh_host:
+    type: string
+  ssh_username:
+    default: root
+    type: string
+  ssh_private_key_filename:
+    type: string
+
+dsl_definitions:
+  fabric_env: &fabric_env
+    host_string: { get_input: ssh_host }
+    user: { get_input: ssh_username }
+    key_filename: { get_input: ssh_private_key_filename }
+
+node_templates:
+  host:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            fabric_env: *fabric_env
+            script_path: scripts/run.sh
+
+outputs: {}
+
+# vim: set syntax=yaml
