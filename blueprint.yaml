@@ -24,7 +24,9 @@ dsl_definitions:
 
 node_templates:
   host:
-    type: cloudify.nodes.SoftwareComponent
+    type: cloudify.nodes.WebServer
+    properties:
+      port: 443
     interfaces:
       cloudify.interfaces.lifecycle:
         start:
